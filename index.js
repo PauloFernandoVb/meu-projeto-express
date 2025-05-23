@@ -139,22 +139,217 @@ app.post("/cadastroClientes", (requisicao, resposta) => {
   let estado = requisicao.body.estado;
   let cep = requisicao.body.cep;
 
-  if (!email || !nome || !endereco || !cidade || !estado || !cep) {
-    return resposta.send(`<p style="color:red; text-align:center;">Erro: Todos os campos devem ser preenchidos.</p><p style="text-align:center;"><a href="/cadastroClientes">Voltar ao formulário</a></p>`);
+  if (email && nome && endereco && cidade && estado && cep) {
+    listaClientes.push({
+      email: email,
+      nome: nome,
+      endereco: endereco,
+      cidade: cidade,
+      estado: estado,
+      cep: cep
+    });
+    return resposta.redirect('/clientes');
   }
 
-  listaClientes.push({
-    email: email,
-    nome: nome,
-    endereco: endereco,
-    cidade: cidade,
-    estado: estado,
-    cep: cep
-  });
+  let conteudo = `
+  <html lang="pt-br">
+    <head>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+      <title>Cadastro de clientes</title>
+    </head>
+    <body>
+      <div class="container w-80 mb-4 mt-4">
+        <form method="POST" action="/cadastroClientes" class="border p-2">
+          <fieldset>
+            <legend class="text-center">Cadastro de Clientes</legend>
+          </fieldset>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+  `;
 
-  console.log("Lista atualizada:", listaClientes);
-  resposta.redirect('/clientes');
+  if (!email) {
+    conteudo += `
+      <label for="email">Email</label>
+      <input type="email" name="email" class="form-control" id="email" placeholder="Email">
+      <span class="invalid-feedback d-block">Por Favor informe o Email</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="email">Email</label>
+      <input type="email" name="email" class="form-control" id="email" value="${email}" placeholder="Email">
+    `;
+  }
+
+  conteudo += `</div>
+            <div class="form-group col-md-6">
+              <label for="senha">Senha</label>
+              <input type="password" class="form-control" id="senha" placeholder="Senha">
+            </div>
+          </div>
+
+          <div class="form-group">
+  `;
+  if (!nome) {
+    conteudo += `
+      <label for="nome">Nome completo</label>
+      <input type="text" name="nome" class="form-control" id="nome" placeholder="Nome completo">
+      <span class="invalid-feedback d-block">Por Favor informe o Nome</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="nome">Nome completo</label>
+      <input type="text" name="nome" class="form-control" id="nome" value="${nome}" placeholder="Nome completo">
+    `;
+  }
+
+  conteudo += `</div>
+          <div class="form-group">
+  `;
+  if (!endereco) {
+    conteudo += `
+      <label for="endereco">Endereço</label>
+      <input type="text" class="form-control" id="endereco" placeholder="Rua dos Lobos, nº 90" name="endereco">
+      <span class="invalid-feedback d-block">Por Favor informe o Endereço</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="endereco">Endereço</label>
+      <input type="text" class="form-control" id="endereco" name="endereco" value="${endereco}" placeholder="Rua dos Lobos, nº 90">
+    `;
+  }
+
+  conteudo += `</div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+  `;
+  if (!cidade) {
+    conteudo += `
+      <label for="cidade">Cidade</label>
+      <input type="text" class="form-control" id="cidade" placeholder="Presidente Prudente" name="cidade">
+      <span class="invalid-feedback d-block">Por Favor informe a Cidade</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="cidade">Cidade</label>
+      <input type="text" class="form-control" id="cidade" value="${cidade}" placeholder="Presidente Prudente" name="cidade">
+    `;
+  }
+
+  conteudo += `</div>
+            <div class="form-group col-md-4">
+  `;
+  if (!estado) {
+    conteudo += `
+      <label for="estado">Estado</label>
+      <select id="estado" class="form-control" name="estado">
+        <option value="">Escolher...</option>
+        <option value="AC">AC</option>
+        <option value="AL">AL</option>
+        <option value="AP">AP</option>
+        <option value="AM">AM</option>
+        <option value="BA">BA</option>
+        <option value="CE">CE</option>
+        <option value="DF">DF</option>
+        <option value="ES">ES</option>
+        <option value="GO">GO</option>
+        <option value="MA">MA</option>
+        <option value="MT">MT</option>
+        <option value="MS">MS</option>
+        <option value="MG">MG</option>
+        <option value="PA">PA</option>
+        <option value="PB">PB</option>
+        <option value="PR">PR</option>
+        <option value="PE">PE</option>
+        <option value="PI">PI</option>
+        <option value="RJ">RJ</option>
+        <option value="RN">RN</option>
+        <option value="RS">RS</option>
+        <option value="RO">RO</option>
+        <option value="RR">RR</option>
+        <option value="SC">SC</option>
+        <option value="SP">SP</option>
+        <option value="SE">SE</option>
+        <option value="TO">TO</option>
+      </select>
+      <span class="invalid-feedback d-block">Por Favor informe o Estado</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="estado">Estado</label>
+      <select id="estado" class="form-control" name="estado">
+        <option value="${estado}" selected>${estado}</option>
+        <option value="AC">AC</option>
+        <option value="AL">AL</option>
+        <option value="AP">AP</option>
+        <option value="AM">AM</option>
+        <option value="BA">BA</option>
+        <option value="CE">CE</option>
+        <option value="DF">DF</option>
+        <option value="ES">ES</option>
+        <option value="GO">GO</option>
+        <option value="MA">MA</option>
+        <option value="MT">MT</option>
+        <option value="MS">MS</option>
+        <option value="MG">MG</option>
+        <option value="PA">PA</option>
+        <option value="PB">PB</option>
+        <option value="PR">PR</option>
+        <option value="PE">PE</option>
+        <option value="PI">PI</option>
+        <option value="RJ">RJ</option>
+        <option value="RN">RN</option>
+        <option value="RS">RS</option>
+        <option value="RO">RO</option>
+        <option value="RR">RR</option>
+        <option value="SC">SC</option>
+        <option value="SP">SP</option>
+        <option value="SE">SE</option>
+        <option value="TO">TO</option>
+      </select>
+    `;
+  }
+
+  conteudo += `</div>
+            <div class="form-group col-md-2">
+  `;
+  if (!cep) {
+    conteudo += `
+      <label for="inputCEP">CEP</label>
+      <input type="text" class="form-control" id="inputCEP" placeholder="99.999-99" name="cep">
+      <span class="invalid-feedback d-block">Por Favor informe o CEP</span>
+    `;
+  } else {
+    conteudo += `
+      <label for="inputCEP">CEP</label>
+      <input type="text" class="form-control" id="inputCEP" value="${cep}" placeholder="99.999-99" name="cep">
+    `;
+  }
+
+  conteudo += `</div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck">
+              <label class="form-check-label" for="gridCheck">
+                Aceito receber ligações
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+          <a href="/" class="btn btn-secondary">Início</a>
+        </form>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    </body>
+  </html>
+  `;
+
+  resposta.send(conteudo);
 });
+
 app.get('/clientes', (req, res) => {
   let html = `
   <!DOCTYPE html>
